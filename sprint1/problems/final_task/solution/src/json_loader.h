@@ -5,6 +5,7 @@
 #include "model.h"
 #include <fstream>
 #include <iostream>
+#include "constants_storage.h"
 
 namespace json_loader {
 

@@ -1,16 +1,15 @@
 #include "json_loader.h"
-
 namespace json_loader {
 
 namespace json = boost::json;
 using namespace model;
 
-std::string GetStringValue(const json::object &obj, std::string &&attribute) {
-  return obj.at(attribute).as_string().data();
+std::string GetStringValue(const json::object &obj, std::string_view attribute) {
+  return obj.at(MakeBoostSV(attribute)).as_string().data();
 }
 
-int GetIntValue(const json::object &obj, std::string &&attribute) {
-  return obj.at(attribute).as_int64();
+int GetIntValue(json::object &obj, std::string_view attribute) {
+  return obj.at(MakeBoostSV(attribute)).as_int64();
 }
 
 std::vector<Road> GetRoads(json::object &map) {
@@ -20,10 +19,10 @@ std::vector<Road> GetRoads(json::object &map) {
   for (auto element : roads_array) {
     auto road_object = element.as_object();
 
-    Point start{GetIntValue(road_object, "x0"), GetIntValue(road_object, "y0")};
+    Point start{GetIntValue(road_object, JsonAttributes::X0), GetIntValue(road_object, JsonAttributes::Y0)};
 
-    bool is_horizontal = road_object.contains("x1");
-    Coord end = GetIntValue(road_object, (is_horizontal ? "x1" : "y1"));
+    bool is_horizontal = road_object.contains(MakeBoostSV(JsonAttributes::X1));
+    Coord end = GetIntValue(road_object, (is_horizontal ? JsonAttributes::X1 : JsonAttributes::Y1));
 
     if (is_horizontal) {
       roads.emplace_back(Road::HORIZONTAL, start, end);
@@ -42,8 +41,9 @@ std::vector<Building> GetBuildings(json::object &map) {
   for (auto element : buildings_array) {
     auto building_object = element.as_object();
 
-    Size size{GetIntValue(building_object, "w"), GetIntValue(building_object, "h")};
-    Point point{GetIntValue(building_object, "x"), GetIntValue(building_object, "y")};
+    Size
+        size{GetIntValue(building_object, JsonAttributes::WIDTH), GetIntValue(building_object, JsonAttributes::HEIGHT)};
+    Point point{GetIntValue(building_object, JsonAttributes::X), GetIntValue(building_object, JsonAttributes::Y)};
     Rectangle bounds{point, size};
 
     buildings.emplace_back(bounds);
@@ -59,9 +59,10 @@ std::vector<Office> GetOffices(json::object &map) {
   for (auto element : offices_array) {
     auto office_object = element.as_object();
 
-    Office::Id id{GetStringValue(office_object, "id")};
-    Point position{GetIntValue(office_object, "x"), GetIntValue(office_object, "y")};
-    Offset offset{GetIntValue(office_object, "offsetX"), GetIntValue(office_object, "offsetY")};
+    Office::Id id{GetStringValue(office_object, JsonAttributes::ID)};
+    Point position{GetIntValue(office_object, JsonAttributes::X), GetIntValue(office_object, JsonAttributes::Y)};
+    Offset offset
+        {GetIntValue(office_object, JsonAttributes::OFFSET_X), GetIntValue(office_object, JsonAttributes::OFFSET_Y)};
 
     offices.emplace_back(id, position, offset);
   }
@@ -90,7 +91,7 @@ Game LoadGame(const std::filesystem::path &json_path) {
   for (auto element : maps_array) {
     auto map_object = element.as_object();
 
-    Map map(Map::Id{GetStringValue(map_object, "id")}, GetStringValue(map_object, "name"));
+    Map map(Map::Id{GetStringValue(map_object, JsonAttributes::ID)}, GetStringValue(map_object, JsonAttributes::NAME));
 
     for (const auto &road : GetRoads(map_object)) {
       map.AddRoad(road);

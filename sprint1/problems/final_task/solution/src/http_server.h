@@ -122,8 +122,6 @@ class Listener : public std::enable_shared_from_this<Listener<RequestHandler>> {
     DoAccept();
   }
 
-
-
   void AsyncRunSession(tcp::socket &&socket) {
     std::make_shared<Session<RequestHandler>>(std::move(socket), request_handler_)->Run();
   }

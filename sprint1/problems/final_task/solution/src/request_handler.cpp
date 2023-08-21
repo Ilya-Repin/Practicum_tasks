@@ -19,8 +19,8 @@ std::shared_ptr<boost::json::array> RequestHandler::MakeMapsArr() {
 
   for (auto map : maps) {
     boost::json::object map_obj;
-    map_obj["id"] = *map.GetId();
-    map_obj["name"] = map.GetName();
+    map_obj[MakeBoostSV(JsonAttributes::ID)] = *map.GetId();
+    map_obj[MakeBoostSV(JsonAttributes::NAME)] = map.GetName();
     maps_arr.push_back(std::move(map_obj));
   }
 
@@ -35,13 +35,13 @@ std::shared_ptr<boost::json::array> RequestHandler::MakeRoadsArr(const model::Ma
     boost::json::object road_obj;
 
     if (road.IsHorizontal()) {
-      road_obj["x0"] = road.GetStart().x;
-      road_obj["y0"] = road.GetStart().y;
-      road_obj["x1"] = road.GetEnd().x;
+      road_obj[MakeBoostSV(JsonAttributes::X0)] = road.GetStart().x;
+      road_obj[MakeBoostSV(JsonAttributes::Y0)] = road.GetStart().y;
+      road_obj[MakeBoostSV(JsonAttributes::X1)] = road.GetEnd().x;
     } else {
-      road_obj["x0"] = road.GetStart().x;
-      road_obj["y0"] = road.GetStart().y;
-      road_obj["y1"] = road.GetEnd().y;
+      road_obj[MakeBoostSV(JsonAttributes::X0)] = road.GetStart().x;
+      road_obj[MakeBoostSV(JsonAttributes::Y0)] = road.GetStart().y;
+      road_obj[MakeBoostSV(JsonAttributes::Y1)] = road.GetEnd().y;
     }
 
     roads_arr.push_back(std::move(road_obj));
@@ -57,10 +57,10 @@ std::shared_ptr<boost::json::array> RequestHandler::MakeBuildingsArr(const model
   for (auto building : buildings) {
     boost::json::object building_obj;
 
-    building_obj["x"] = building.GetBounds().position.x;
-    building_obj["y"] = building.GetBounds().position.y;
-    building_obj["w"] = building.GetBounds().size.width;
-    building_obj["h"] = building.GetBounds().size.height;
+    building_obj[MakeBoostSV(JsonAttributes::X)] = building.GetBounds().position.x;
+    building_obj[MakeBoostSV(JsonAttributes::Y)] = building.GetBounds().position.y;
+    building_obj[MakeBoostSV(JsonAttributes::WIDTH)] = building.GetBounds().size.width;
+    building_obj[MakeBoostSV(JsonAttributes::HEIGHT)] = building.GetBounds().size.height;
 
     buildings_arr.push_back(std::move(building_obj));
   }
@@ -75,11 +75,11 @@ std::shared_ptr<boost::json::array> RequestHandler::MakeOfficesArr(const model::
   for (auto office : offices) {
     boost::json::object office_obj;
 
-    office_obj["id"] = *office.GetId();
-    office_obj["x"] = office.GetPosition().x;
-    office_obj["y"] = office.GetPosition().y;
-    office_obj["offsetX"] = office.GetOffset().dx;
-    office_obj["offsetY"] = office.GetOffset().dy;
+    office_obj[MakeBoostSV(JsonAttributes::ID)] = *office.GetId();
+    office_obj[MakeBoostSV(JsonAttributes::X)] = office.GetPosition().x;
+    office_obj[MakeBoostSV(JsonAttributes::Y)] = office.GetPosition().y;
+    office_obj[MakeBoostSV(JsonAttributes::OFFSET_X)] = office.GetOffset().dx;
+    office_obj[MakeBoostSV(JsonAttributes::OFFSET_Y)] = office.GetOffset().dy;
 
     offices_arr.push_back(std::move(office_obj));
   }
@@ -88,17 +88,17 @@ std::shared_ptr<boost::json::array> RequestHandler::MakeOfficesArr(const model::
 }
 
 void RequestHandler::ConfigureJsonMap(boost::json::object &map_obj, const model::Map *map) {
-  map_obj["id"] = *map->GetId();
-  map_obj["name"] = map->GetName();
+  map_obj[MakeBoostSV(JsonAttributes::ID)] = *map->GetId();
+  map_obj[MakeBoostSV(JsonAttributes::NAME)] = map->GetName();
 
   std::shared_ptr<boost::json::array> roads = MakeRoadsArr(map);
-  map_obj["roads"] = *roads;
+  map_obj[MakeBoostSV(JsonAttributes::ROADS)] = *roads;
 
   std::shared_ptr<boost::json::array> buildings = MakeBuildingsArr(map);
-  map_obj["buildings"] = *buildings;
+  map_obj[MakeBoostSV(JsonAttributes::BUILDINGS)] = *buildings;
 
   std::shared_ptr<boost::json::array> offices = MakeOfficesArr(map);
-  map_obj["offices"] = *offices;
+  map_obj[MakeBoostSV(JsonAttributes::OFFICES)] = *offices;
 }
 
 }  // namespace http_handler
