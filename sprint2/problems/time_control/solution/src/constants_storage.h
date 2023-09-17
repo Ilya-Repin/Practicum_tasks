@@ -1,0 +1,120 @@
+#pragma once
+#include <string_view>
+#include <unordered_map>
+
+
+using namespace std::literals;
+
+boost::string_view inline MakeBoostSV(std::string_view sv) {
+  return {sv.data(), sv.length()};
+}
+
+struct JsonAttributes {
+  JsonAttributes() = delete;
+
+  constexpr static std::string_view ID = "id"sv;
+  constexpr static std::string_view NAME = "name"sv;
+
+  constexpr static std::string_view X = "x"sv;
+  constexpr static std::string_view Y = "y"sv;
+
+  constexpr static std::string_view X0 = "x0"sv;
+  constexpr static std::string_view Y0 = "y0"sv;
+
+  constexpr static std::string_view X1 = "x1"sv;
+  constexpr static std::string_view Y1 = "y1"sv;
+
+  constexpr static std::string_view OFFSET_X = "offsetX"sv;
+  constexpr static std::string_view OFFSET_Y = "offsetY"sv;
+
+  constexpr static std::string_view WIDTH = "w"sv;
+  constexpr static std::string_view HEIGHT = "h"sv;
+
+  constexpr static std::string_view ROADS = "roads"sv;
+  constexpr static std::string_view BUILDINGS = "buildings"sv;
+  constexpr static std::string_view OFFICES = "offices"sv;
+
+  constexpr static std::string_view CODE = "code"sv;
+  constexpr static std::string_view MESSAGE = "message"sv;
+};
+
+struct ContentType {
+  ContentType() = delete;
+
+  constexpr static std::string_view TEXT_HTML = "text/html"sv;
+  constexpr static std::string_view TEXT_CSS = "text/css"sv;
+  constexpr static std::string_view TEXT_PLAIN = "text/plain"sv;
+  constexpr static std::string_view TEXT_JAVASCRIPT = "text/javascript"sv;
+  constexpr static std::string_view APPLICATION_JSON = "application/json"sv;
+  constexpr static std::string_view APPLICATION_XML = "application/xml"sv;
+  constexpr static std::string_view APPLICATION_OCTET = "application/octet-stream"sv;
+  constexpr static std::string_view IMAGE_PNG = "image/png"sv;
+  constexpr static std::string_view IMAGE_JPEG = "image/jpeg"sv;
+  constexpr static std::string_view IMAGE_GIF = "image/gif"sv;
+  constexpr static std::string_view IMAGE_BMP = "image/bmp"sv;
+  constexpr static std::string_view IMAGE_ICON = "image/vnd.microsoft.icon"sv;
+  constexpr static std::string_view IMAGE_TIFF = "image/tiff"sv;
+  constexpr static std::string_view IMAGE_SVG_XML = "image/svg+xml"sv;
+  constexpr static std::string_view AUDIO_MPEG = "audio/mpeg"sv;
+
+  constexpr static std::string_view EXT_HTM = ".htm"sv;
+  constexpr static std::string_view EXT_HTML = ".html"sv;
+  constexpr static std::string_view EXT_CSS = ".css"sv;
+  constexpr static std::string_view EXT_TXT = ".txt"sv;
+  constexpr static std::string_view EXT_JS = ".js"sv;
+  constexpr static std::string_view EXT_JSON = ".json"sv;
+  constexpr static std::string_view EXT_XML = ".xml"sv;
+  constexpr static std::string_view EXT_PNG = ".png"sv;
+  constexpr static std::string_view EXT_JPG = ".jpg"sv;
+  constexpr static std::string_view EXT_JPEG = ".jpeg"sv;
+  constexpr static std::string_view EXT_JPE = ".jpe"sv;
+  constexpr static std::string_view EXT_GIF = ".gif"sv;
+  constexpr static std::string_view EXT_BMP = ".bmp"sv;
+  constexpr static std::string_view EXT_ICO = ".ico"sv;
+  constexpr static std::string_view EXT_TIFF = ".tiff"sv;
+  constexpr static std::string_view EXT_TIF = ".tif"sv;
+  constexpr static std::string_view EXT_SVG = ".svg"sv;
+  constexpr static std::string_view EXT_SVGZ = ".svgz"sv;
+  constexpr static std::string_view EXT_MP3 = ".mp3"sv;
+
+  static const std::unordered_map<std::string_view, std::string_view> extensions;
+};
+
+inline const std::unordered_map<std::string_view, std::string_view> ContentType::extensions{
+    {ContentType::EXT_HTM, ContentType::TEXT_HTML}, {ContentType::EXT_HTML, ContentType::TEXT_HTML},
+    {ContentType::EXT_CSS, ContentType::TEXT_CSS}, {ContentType::EXT_TXT, ContentType::TEXT_PLAIN},
+    {ContentType::EXT_JS, ContentType::TEXT_JAVASCRIPT},
+    {ContentType::EXT_JSON, ContentType::APPLICATION_JSON},
+    {ContentType::EXT_XML, ContentType::APPLICATION_XML}, {ContentType::EXT_PNG, ContentType::IMAGE_PNG},
+    {ContentType::EXT_JPG, ContentType::IMAGE_JPEG}, {ContentType::EXT_JPEG, ContentType::IMAGE_JPEG},
+    {ContentType::EXT_JPE, ContentType::IMAGE_JPEG}, {ContentType::EXT_GIF, ContentType::IMAGE_GIF},
+    {ContentType::EXT_BMP, ContentType::IMAGE_BMP}, {ContentType::EXT_ICO, ContentType::IMAGE_ICON},
+    {ContentType::EXT_TIFF, ContentType::IMAGE_TIFF}, {ContentType::EXT_TIF, ContentType::IMAGE_TIFF},
+    {ContentType::EXT_SVG, ContentType::IMAGE_SVG_XML}, {ContentType::EXT_SVGZ, ContentType::IMAGE_SVG_XML},
+    {ContentType::EXT_MP3, ContentType::AUDIO_MPEG}};
+
+struct HttpStatus {
+  HttpStatus() = delete;
+
+  constexpr static std::string_view CODE_400 = "badRequest"sv;
+  constexpr static std::string_view MESSAGE_400 = "Bad request"sv;
+
+  constexpr static std::string_view MESSAGE_404 = "File not found"sv;
+
+  constexpr static std::string_view CODE_MAP_404 = "mapNotFound"sv;
+  constexpr static std::string_view MESSAGE_MAP_404 = "Map not found"sv;
+
+  constexpr static std::string_view MESSAGE_INVALID_METHOD = "Invalid method"sv;
+};
+
+struct SystemPaths {
+  SystemPaths() = delete;
+
+  constexpr static std::string_view MAPS = "/api/v1/maps"sv;
+  constexpr static std::string_view API = "/api/"sv;
+  constexpr static std::string_view JOIN = "/api/v1/game/join"sv;
+  constexpr static std::string_view PLAYERS = "/api/v1/game/players"sv;
+  constexpr static std::string_view GAME_STATE = "/api/v1/game/state"sv;
+  constexpr static std::string_view ACTION = "/api/v1/game/player/action"sv;
+  constexpr static std::string_view TICK = "/api/v1/game/tick"sv;
+};
