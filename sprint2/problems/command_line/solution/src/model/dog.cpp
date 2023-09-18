@@ -39,15 +39,15 @@ bool Velocity::operator==(const Velocity &other) const {
 }
 
 // Getters
-const std::string &Dog::GetName() {
+const std::string &Dog::GetName() const noexcept{
   return name_;
 }
 
-Direction Dog::GetDirection() {
+Direction Dog::GetDirection() const noexcept {
   return dir_;
 }
 
-Velocity Dog::GetVelocity() {
+Velocity Dog::GetVelocity() const noexcept {
   return speed_;
 }
 

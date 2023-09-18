@@ -19,15 +19,16 @@ class GameSession {
 
   // Getters
   const Dogs &GetDogs() const noexcept;
-  const Id &GetId();
-  const Map::Id &GetMapId();
-  std::vector<std::pair<uint64_t, std::string>> GetPlayersData();
-  Position GetRandomPosition();
+  const Id &GetId() const noexcept;
+  const Map::Id &GetMapId() const noexcept;
+  std::vector<std::pair<uint64_t, std::string>> GetPlayersData() const;
+  Position GetRandomPosition() const;
 
   // Methods
   std::shared_ptr<model::Dog> CreateDog(std::string &dog_name);
-  bool CanAddPlayer();
   void Tick(uint64_t time_delta);
+
+  bool CanAddPlayer() const noexcept;
 
  private:
   Id id_;

@@ -38,7 +38,6 @@ class RequestHandler : public std::enable_shared_from_this<RequestHandler> {
     if (req.target().starts_with(SystemPaths::API)) {
       auto handle = [self = shared_from_this(), send,
           req = std::forward<decltype(req)>(req)] {
-        assert(self->api_strand_.running_in_this_thread());
         auto response = self->api_handler_->HandleApiRequest(req);
         send(response);
       };

@@ -4,6 +4,7 @@
 
 namespace model {
 
+using namespace constants;
 using namespace std::literals;
 
 void Game::AddMap(const Map &map) {
@@ -40,7 +41,7 @@ void Map::AddOffice(const Office &office) {
   }
 }
 
-double Map::GetDogSpeed() const {
+double Map::GetDogSpeed() const noexcept {
   return dog_speed_;
 }
 
@@ -112,19 +113,19 @@ Map::Crossroad Map::FindRoadsByPosition(Position pos) const {
 }
 
 bool Road::Contain(Position pos) const noexcept {
-  double left_border = std::min(start_.x, end_.x) - 0.4;
-  double right_border = std::max(start_.x, end_.x) + 0.4;
-  double upper_border = std::min(start_.y, end_.y) - 0.4;
-  double lower_border = std::max(start_.y, end_.y) + 0.4;
+  double left_border = std::min(start_.x, end_.x) - GameSettings::LANE_WIDTH;
+  double right_border = std::max(start_.x, end_.x) + GameSettings::LANE_WIDTH;
+  double upper_border = std::min(start_.y, end_.y) - GameSettings::LANE_WIDTH;
+  double lower_border = std::max(start_.y, end_.y) + GameSettings::LANE_WIDTH;
 
   return ((left_border <= pos.x) && (pos.x <= right_border) && (pos.y <= lower_border) && (upper_border <= pos.y));
 }
 
 Position Road::GetClosestPoint(Position pos) const noexcept {
-  double left_border = std::min(start_.x, end_.x) - 0.4;
-  double right_border = std::max(start_.x, end_.x) + 0.4;
-  double upper_border = std::min(start_.y, end_.y) - 0.4;
-  double lower_border = std::max(start_.y, end_.y) + 0.4;
+  double left_border = std::min(start_.x, end_.x) - GameSettings::LANE_WIDTH;
+  double right_border = std::max(start_.x, end_.x) + GameSettings::LANE_WIDTH;
+  double upper_border = std::min(start_.y, end_.y) - GameSettings::LANE_WIDTH;
+  double lower_border = std::max(start_.y, end_.y) + GameSettings::LANE_WIDTH;
 
   Position closest_point;
 

@@ -38,7 +38,7 @@ std::vector<std::shared_ptr<model::Map>> Application::ListMaps() {
   return game_.GetMaps();
 }
 
-const std::shared_ptr<model::Map> Application::GetMap(model::Map::Id id) {
+std::shared_ptr<model::Map> Application::GetMap(model::Map::Id id) const {
   auto ptr = game_.FindMap(id);
 
   if (!ptr) {
@@ -48,12 +48,12 @@ const std::shared_ptr<model::Map> Application::GetMap(model::Map::Id id) {
   return ptr;
 }
 
-std::vector<GameState> Application::GetGameState(Token token) {
+std::vector<GameState> Application::GetGameState(Token token) const {
   if (!players_.GetByToken(token)) {
     return {};
   }
 
-  auto session = session_id_to_session[(players_.GetByToken(token)->GetGameSessionId())];
+  auto session = session_id_to_session.at(players_.GetByToken(token)->GetGameSessionId());
   auto dogs = session->GetDogs();
 
   std::vector<GameState> game_state;

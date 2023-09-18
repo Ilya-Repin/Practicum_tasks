@@ -47,7 +47,6 @@ class Ticker : public std::enable_shared_from_this<Ticker> {
 
   void OnTick(sys::error_code ec) {
     using namespace std::chrono;
-    assert(strand_.running_in_this_thread());
 
     if (!ec) {
       auto this_tick = Clock::now();

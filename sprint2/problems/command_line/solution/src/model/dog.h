@@ -43,9 +43,9 @@ class Dog {
   // Getters
   const Id &GetId() const noexcept;
   Position GetPosition() const noexcept;
-  Velocity GetVelocity();
-  Direction GetDirection();
-  const std::string &GetName();
+  Velocity GetVelocity() const noexcept;
+  Direction GetDirection() const noexcept;
+  const std::string &GetName() const noexcept;
 
   // Setters
   void SetDirection(char direction);

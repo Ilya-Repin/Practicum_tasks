@@ -4,6 +4,7 @@ namespace json_loader {
 
 namespace json = boost::json;
 using namespace model;
+using namespace constants;
 
 std::string GetStringValue(const json::object &obj, std::string_view attribute) {
   return obj.at(MakeBoostSV(attribute)).as_string().data();

@@ -6,15 +6,15 @@ namespace app {
 
 // Getters
 
-std::shared_ptr<Player> Players::GetByDogIdAndSessionId(model::Dog::Id dog_id, model::GameSession::Id gs_id) {
+std::shared_ptr<Player> Players::GetByDogIdAndSessionId(model::Dog::Id dog_id, model::GameSession::Id gs_id) const {
   return players_[player_id_to_player_index_.at(std::make_pair(gs_id, dog_id))];
 }
 
-std::shared_ptr<Player> Players::GetByToken(Token &token) {
+std::shared_ptr<Player> Players::GetByToken(Token &token) const {
   return players_[token_to_player_index_.at(token)];
 }
 
-size_t Players::GetPlayersAmount() {
+size_t Players::GetPlayersAmount() const {
   return players_.size();
 }
 
@@ -26,7 +26,7 @@ const Player::Id Player::GetId() const noexcept {
   return id_;
 }
 
-const model::GameSession::Id Player::GetGameSessionId() const noexcept {
+const model::GameSession::Id &Player::GetGameSessionId() const noexcept{
   return session_->GetId();
 }
 

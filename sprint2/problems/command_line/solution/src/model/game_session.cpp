@@ -18,11 +18,11 @@ std::shared_ptr<model::Dog> GameSession::CreateDog(std::string &dog_name) {
   return dog_ptr;
 }
 
-const GameSession::Id &GameSession::GetId() {
+const GameSession::Id &GameSession::GetId() const noexcept {
   return id_;
 }
 
-const Map::Id &GameSession::GetMapId() {
+const Map::Id &GameSession::GetMapId() const noexcept {
   return map_.GetId();
 }
 
@@ -30,11 +30,11 @@ const GameSession::Dogs &GameSession::GetDogs() const noexcept {
   return dogs_;
 }
 
-bool GameSession::CanAddPlayer() {
+bool GameSession::CanAddPlayer() const noexcept {
   return players_amount_ < MAX_PLAYERS_AMOUNT;
 }
 
-std::vector<std::pair<uint64_t, std::string>> GameSession::GetPlayersData() {
+std::vector<std::pair<uint64_t, std::string>> GameSession::GetPlayersData() const {
   std::vector<std::pair<uint64_t, std::string>> data;
 
   for (auto &dog : dogs_) {
@@ -56,7 +56,7 @@ void GameSession::Tick(uint64_t time_delta) {
   }
 }
 
-Position GameSession::GetRandomPosition() {
+Position GameSession::GetRandomPosition() const {
   auto roads = map_.GetRoads();
 
   size_t random_index = rand() % roads.size();

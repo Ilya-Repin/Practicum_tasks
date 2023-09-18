@@ -23,8 +23,8 @@ class Application {
   std::pair<Token, model::Dog::Id> JoinGame(std::string name, model::Map::Id map_id);
   std::vector<std::pair<uint64_t, std::string>> ListPlayers(Token token); // <Dog::Id, dog_name>
   std::vector<std::shared_ptr<model::Map>> ListMaps();
-  const std::shared_ptr<model::Map> GetMap(model::Map::Id id);
-  std::vector<GameState> GetGameState(Token token);
+  std::shared_ptr<model::Map> GetMap(model::Map::Id id) const;
+  std::vector<GameState> GetGameState(Token token) const;
   bool DoAction(Token token, std::string dir);
   void Tick(uint64_t time_delta);
 

@@ -6,6 +6,7 @@
 #include <map>
 
 #include "dog.h"
+#include "../constants_storage.h"
 
 namespace model {
 
@@ -155,7 +156,7 @@ class Map {
 
   void AddOffice(const Office &office);
 
-  double GetDogSpeed() const;
+  double GetDogSpeed() const noexcept;
 
   std::pair<bool, Position> CalculateNewPosition(Position pos, Velocity speed, uint64_t time_delta) const;
 

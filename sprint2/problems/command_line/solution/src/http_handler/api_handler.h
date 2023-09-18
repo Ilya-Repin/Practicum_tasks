@@ -18,7 +18,9 @@ namespace sys = boost::system;
 namespace beast = boost::beast;
 namespace http = beast::http;
 
+using namespace constants;
 using namespace std::literals;
+
 using JsonResponse = http::response<http::string_body>;
 using StringResponse = http::response<http::string_body>;
 

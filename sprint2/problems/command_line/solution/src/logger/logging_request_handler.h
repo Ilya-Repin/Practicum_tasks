@@ -16,6 +16,7 @@ namespace beast = boost::beast;
 namespace http = beast::http;
 namespace net = boost::asio;
 
+
 template<class SomeRequestHandler>
 class LoggingRequestHandler {
   template<typename Body, typename Allocator>
@@ -25,7 +26,7 @@ class LoggingRequestHandler {
                             {"URI", r.target()},
                             {"method", r.method_string()}};
 
-    Log(custom_data, "request received"sv);
+    Log(custom_data, "request received");
   }
 
   template<typename T>
@@ -36,7 +37,7 @@ class LoggingRequestHandler {
     std::string_view content_type = response[http::field::content_type];
 
     if (content_type.empty()) {
-      content_type = "null"sv;
+      content_type = "null";
     }
 
     json::value custom_data{{"ip", endpoint.address().to_string()},
@@ -44,7 +45,7 @@ class LoggingRequestHandler {
                             {"code", response.result_int()},
                             {"content_type", content_type}};
 
-    Log(custom_data, "response sent"sv);
+    Log(custom_data, "response sent");
   }
 
  public:

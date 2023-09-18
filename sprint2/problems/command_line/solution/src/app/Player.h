@@ -23,7 +23,7 @@ class Player {
   Token GetToken() const noexcept;
   const Player::Id GetId() const noexcept;
   const model::Dog::Id GetDogId() const noexcept;
-  const model::GameSession::Id GetGameSessionId() const noexcept;
+  const model::GameSession::Id &GetGameSessionId() const noexcept;
   const model::Map::Id GetMapId() const noexcept;
   const std::shared_ptr<model::Dog> GetDog() const noexcept;
 
@@ -57,9 +57,9 @@ class Players {
   std::pair<Token, model::Dog::Id> AddPlayer(std::shared_ptr<model::Dog> &dog, std::shared_ptr<model::GameSession> gs);
 
   // Getters
-  std::shared_ptr<Player> GetByDogIdAndSessionId(model::Dog::Id dog_id, model::GameSession::Id gs_id);
-  std::shared_ptr<Player> GetByToken(Token &token);
-  size_t GetPlayersAmount();
+  std::shared_ptr<Player> GetByDogIdAndSessionId(model::Dog::Id dog_id, model::GameSession::Id gs_id) const;
+  std::shared_ptr<Player> GetByToken(Token &token) const;
+  size_t GetPlayersAmount() const;
 
   // Methods
   bool IsTokenExist(Token token);
