@@ -22,7 +22,6 @@ class Ticker : public std::enable_shared_from_this<Ticker> {
 
   void Start() {
     net::dispatch(strand_, [self = shared_from_this()] {
-      assert(self->strand_.running_in_this_thread());
       self->last_tick_ = Clock::now();
       self->ScheduleTick();
     });
@@ -38,7 +37,6 @@ class Ticker : public std::enable_shared_from_this<Ticker> {
   std::chrono::steady_clock::time_point last_tick_;
 
   void ScheduleTick() {
-    assert(strand_.running_in_this_thread());
     timer_.expires_after(period_);
     timer_.async_wait([self = shared_from_this()](sys::error_code ec) {
       self->OnTick(ec);

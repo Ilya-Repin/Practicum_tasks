@@ -506,7 +506,7 @@ StringResponse ApiHandler::HandleTickRequest(const http::request<http::string_bo
     return MakeBadRequestError(HttpResponseConstants::MESSAGE_INVALID_CONTENT_TYPE, req.version());
   }
 
-  uint64_t time_delta;
+  uint64_t time_delta = 0;
 
   try {
     auto value = json::parse(req.body());
