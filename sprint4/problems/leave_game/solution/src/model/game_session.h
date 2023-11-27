@@ -3,6 +3,7 @@
 #include "model.h"
 #include "Loot/loot_generator.h"
 #include "collision_detector/collision_detector.h"
+
 namespace model {
 
 struct Loot {
@@ -54,9 +55,15 @@ class GameSession {
  private:
   // Methods
   std::vector<std::shared_ptr<Dog>> UpdateDogState(uint64_t time_delta);
-  void AddLoot(uint64_t time_delta);
+  void AddLootOnMap(uint64_t time_delta);
   void EraseLoot(uint64_t id);
   void HandleCollisions();
+
+  std::vector<Dog::Id> AddDogs(collision_detector::ItemGatherer &item_gatherer);
+  void AddOffices(collision_detector::ItemGatherer &item_gatherer);
+  void AddLoots(collision_detector::ItemGatherer &item_gatherer);
+  void HandleGatheringEvents(std::vector<collision_detector::GatheringEvent> &gathering_events,
+                             std::vector<Dog::Id> &index_to_dog_id);
 
   // Predicates
   bool IsLoot(size_t item_id);

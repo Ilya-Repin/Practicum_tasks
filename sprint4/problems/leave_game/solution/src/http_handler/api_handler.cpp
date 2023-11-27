@@ -115,6 +115,50 @@ std::shared_ptr<boost::json::array> ApiHandler::MakeRecordsArr(std::string targe
   return std::make_shared<boost::json::array>(records_arr);
 }
 
+std::shared_ptr<boost::json::object> ApiHandler::GetPlayersJson(const std::vector<app::GameState> &game_states) {
+  boost::json::object players;
+
+  for (auto data = game_states.rbegin(); data != game_states.rend(); ++data) {
+    boost::json::object params;
+
+    boost::json::array pos_array{data->pos.x, data->pos.y};
+    boost::json::array speed_array{data->speed.horizontal, data->speed.vertical};
+    boost::json::array bag_array;
+
+    for (auto &thing : data->bag) {
+      boost::json::object thing_obj;
+      thing_obj[MakeBoostSV(JsonAttributes::ID)] = thing.id;
+      thing_obj[MakeBoostSV(JsonAttributes::TYPE)] = thing.type;
+      bag_array.push_back(thing_obj);
+    }
+
+    params[MakeBoostSV(JsonAttributes::POS)] = pos_array;
+    params[MakeBoostSV(JsonAttributes::SPEED)] = speed_array;
+    params[MakeBoostSV(JsonAttributes::DIR)] = data->dir;
+    params[MakeBoostSV(JsonAttributes::BAG)] = bag_array;
+    params[MakeBoostSV(JsonAttributes::SCORE)] = data->score;
+
+    players[std::to_string(*data->id)] = params;
+  }
+
+  return std::make_shared<boost::json::object>(players);
+}
+
+std::shared_ptr<boost::json::object> ApiHandler::GetLostObjectsJson(const std::unordered_map<uint64_t, model::Loot> &loot) {
+  boost::json::object lost_objects;
+
+  for (auto object : loot) {
+    boost::json::object params;
+
+    params[MakeBoostSV(JsonAttributes::TYPE)] = object.second.type;
+    params[MakeBoostSV(JsonAttributes::POS)] = {object.second.x, object.second.y};
+
+    lost_objects[MakeBoostSV(std::to_string(object.first))] = params;
+  }
+
+  return std::make_shared<boost::json::object>(lost_objects);
+}
+
 void ApiHandler::ConfigureJsonMap(boost::json::object &map_obj, const std::shared_ptr<model::Map> map) {
   map_obj[MakeBoostSV(JsonAttributes::ID)] = *map->GetId();
   map_obj[MakeBoostSV(JsonAttributes::NAME)] = map->GetName();
@@ -428,48 +472,14 @@ StringResponse ApiHandler::GetGameState(const http::request<http::string_body> &
     std::shared_ptr<app::Token> token = std::get<std::shared_ptr<app::Token>>(result);
 
     auto game_state = app_->GetGameState(*token);
-    boost::json::object players;
 
-    for (auto data = game_state.first.rbegin(); data != game_state.first.rend(); ++data) {
-      boost::json::object params;
-
-      boost::json::array pos_array{data->pos.x, data->pos.y};
-      boost::json::array speed_array{data->speed.horizontal, data->speed.vertical};
-      boost::json::array bag_array;
-
-      for (auto &thing : data->bag) {
-        boost::json::object thing_obj;
-        thing_obj[MakeBoostSV(JsonAttributes::ID)] = thing.id;
-        thing_obj[MakeBoostSV(JsonAttributes::TYPE)] = thing.type;
-        bag_array.push_back(thing_obj);
-      }
-
-      params[MakeBoostSV(JsonAttributes::POS)] = pos_array;
-      params[MakeBoostSV(JsonAttributes::SPEED)] = speed_array;
-      params[MakeBoostSV(JsonAttributes::DIR)] = data->dir;
-      params[MakeBoostSV(JsonAttributes::BAG)] = bag_array;
-      params[MakeBoostSV(JsonAttributes::SCORE)] = data->score;
-
-      players[std::to_string(*data->id)] = params;
-    }
+    auto players = GetPlayersJson(game_state.first);
+    auto lost_objects = GetLostObjectsJson(game_state.second);
 
     boost::json::object res_object;
 
-    res_object[MakeBoostSV(JsonAttributes::PLAYERS)] = players;
-
-    boost::json::object lost_objects;
-    auto loot = game_state.second;
-
-    for (auto object : loot) {
-      boost::json::object params;
-
-      params[MakeBoostSV(JsonAttributes::TYPE)] = object.second.type;
-      params[MakeBoostSV(JsonAttributes::POS)] = {object.second.x, object.second.y};
-
-      lost_objects[MakeBoostSV(std::to_string(object.first))] = params;
-    }
-
-    res_object[MakeBoostSV(JsonAttributes::LOST_OBJECTS)] = lost_objects;
+    res_object[MakeBoostSV(JsonAttributes::PLAYERS)] = *players;
+    res_object[MakeBoostSV(JsonAttributes::LOST_OBJECTS)] = *lost_objects;
 
     return MakeJsonResponse(http::status::ok,
                             std::string_view(boost::json::serialize(res_object)),

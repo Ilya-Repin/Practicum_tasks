@@ -21,7 +21,7 @@ std::shared_ptr<model::Dog> GameSession::CreateDog(std::string &dog_name) {
 std::vector<std::shared_ptr<Dog>> GameSession::Tick(uint64_t time_delta) {
   auto retired_dogs = UpdateDogState(time_delta);
   HandleCollisions();
-  AddLoot(time_delta);
+  AddLootOnMap(time_delta);
 
   return retired_dogs;
 }
@@ -50,7 +50,7 @@ std::vector<std::shared_ptr<Dog>> GameSession::UpdateDogState(uint64_t time_delt
   return retired;
 }
 
-void GameSession::AddLoot(uint64_t time_delta) {
+void GameSession::AddLootOnMap(uint64_t time_delta) {
   auto new_loot_amount = loot_generator_.Generate(std::chrono::milliseconds(time_delta), loots_.size(), dogs_.size());
 
   for (int i = 0; i < new_loot_amount; ++i) {
@@ -61,33 +61,49 @@ void GameSession::AddLoot(uint64_t time_delta) {
 }
 
 void GameSession::HandleCollisions() {
-  using namespace collision_detector;
+  collision_detector::ItemGatherer item_gatherer;
 
-  ItemGatherer item_gatherer;
+  auto index_to_dog_id = std::move(AddDogs(item_gatherer));
+  AddLoots(item_gatherer);
+  AddOffices(item_gatherer);
+
+  auto gathering_events = FindGatherEvents(item_gatherer);
+
+  HandleGatheringEvents(gathering_events, index_to_dog_id);
+}
+
+std::vector<Dog::Id> GameSession::AddDogs(collision_detector::ItemGatherer &item_gatherer) {
   std::vector<Dog::Id> index_to_dog_id;
 
   for (auto &dog : dogs_) {
     auto position = dog.second->GetPosition();
     auto previous_position = dog.second->GetPreviousPosition();
 
-    item_gatherer.AddGatherer(Gatherer{{position.x, position.y},
-                                       {previous_position.x, previous_position.y},
-                                       constants::GameSettings::DOG_WIDTH});
+    item_gatherer.AddGatherer(collision_detector::Gatherer{{position.x, position.y},
+                                                           {previous_position.x, previous_position.y},
+                                                           constants::GameSettings::DOG_WIDTH});
 
     index_to_dog_id.push_back(dog.first);
   }
 
-  for (uint64_t i = 0; i < loots_amount_; ++i) {
-    item_gatherer.AddItem(Item{{loots_[i].x, loots_[i].y}, constants::GameSettings::LOOT_WIDTH});
-  }
+  return index_to_dog_id;
+}
 
+void GameSession::AddLoots(collision_detector::ItemGatherer &item_gatherer) {
+  for (uint64_t i = 0; i < loots_amount_; ++i) {
+    item_gatherer.AddItem(collision_detector::Item{{loots_[i].x, loots_[i].y}, constants::GameSettings::LOOT_WIDTH});
+  }
+}
+
+void GameSession::AddOffices(collision_detector::ItemGatherer &item_gatherer) {
   for (auto &office : map_.GetOffices()) {
     std::pair<double, double> coord{office.GetPosition().x, office.GetPosition().y};
     item_gatherer.AddItem({{coord.first, coord.second}, constants::GameSettings::BASE_WIDTH});
   }
+}
 
-  auto gathering_events = FindGatherEvents(item_gatherer);
-
+void GameSession::HandleGatheringEvents(std::vector<collision_detector::GatheringEvent> &gathering_events,
+                                        std::vector<Dog::Id> &index_to_dog_id) {
   for (auto &event : gathering_events) {
     auto dog = dogs_[index_to_dog_id[event.gatherer_id]];
 
@@ -100,7 +116,6 @@ void GameSession::HandleCollisions() {
       dog->UnloadBag(map_.GetValues());
     }
   }
-
 }
 
 void GameSession::EraseLoot(uint64_t id) {

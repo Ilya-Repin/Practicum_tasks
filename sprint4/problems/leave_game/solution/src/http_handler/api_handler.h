@@ -55,6 +55,8 @@ class ApiHandler {
   std::shared_ptr<boost::json::array> MakeBuildingsArr(const std::shared_ptr<model::Map> map);
   std::shared_ptr<boost::json::array> MakeOfficesArr(const std::shared_ptr<model::Map> map);
   std::shared_ptr<boost::json::array> MakeRecordsArr(std::string target);
+  std::shared_ptr<boost::json::object> GetPlayersJson(const std::vector<app::GameState> &game_states);
+  std::shared_ptr<boost::json::object> GetLostObjectsJson(const std::unordered_map<uint64_t, model::Loot> &loot);
 
   std::variant<JsonResponse, std::shared_ptr<app::Token>> GetToken(const http::request<http::string_body> &req);
 
